@@ -1,7 +1,7 @@
 /**
  * Created by dbast on 22/02/2016.
  */
-public class FeettoMetersFilter extends FilterFramework {
+public class AltitudeFilter extends FilterFramework {
     public void run()
     {
         int bytesread = 0;					// Number of bytes read from the input file.
