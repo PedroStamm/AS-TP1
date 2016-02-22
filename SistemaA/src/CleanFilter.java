@@ -1,3 +1,5 @@
+import java.nio.ByteBuffer;
+
 /**
  * Created by dbast on 22/02/2016.
  */
@@ -22,14 +24,18 @@ public class CleanFilter extends FilterFramework {
                 for (i=0; i<IdLength; i++ ) {
                     databyte = ReadFilterInputPort();
                     id = id | (databyte & 0xFF);        // We append the byte on to ID...
-                } // for
-                if (id == 0 || id==2 || id==4) {        // select only the values for timestamp, temperature and altitude
                     if (i != IdLength - 1)                // If this is not the last byte, then slide the
                     {                                    // previously appended byte to the left by one byte
                         id = id << 8;                    // to make room for the next byte we append to the ID
                     } // if
-                    bytesread++;
-                    WriteFilterOutputPort(databyte);
+                } // for
+                bytesread++;
+                if (id == 0 || id==2 || id==4) {        // select only the values for timestamp, temperature and altitude
+                    byte[] bytes = ByteBuffer.allocate(4).putInt(id).array(); // transform id to bytes
+                    for (i=0;i<bytes.length;i++)
+                    {
+                        WriteFilterOutputPort(bytes[i]); // write id to output
+                    }
                     byteswritten++;
 
                     measurement = 0;
@@ -43,7 +49,7 @@ public class CleanFilter extends FilterFramework {
                             // measurement
                         } // if
                         bytesread++;									// Increment the byte count
-                        WriteFilterOutputPort(databyte);
+                        WriteFilterOutputPort(databyte);                // write data to output
                         byteswritten++;
                     } // for
                 } else {
