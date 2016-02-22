@@ -138,7 +138,7 @@ public class AltitudeFilter extends FilterFramework {
     } // run
 
     private long feetToMeters(long altitude){
-        altitude = (long) (altitude*0.3048);
+        altitude = Double.doubleToLongBits (Double.longBitsToDouble(altitude)*0.3048);
         return altitude;
     }
 
