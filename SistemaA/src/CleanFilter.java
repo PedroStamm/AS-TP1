@@ -9,6 +9,8 @@ public class CleanFilter extends FilterFramework {
         byte databyte = 0;					// The byte of data read from the file
         int id, i;
         int IdLength = 4;				// This is the length of IDs in the byte stream
+        long measurement;				// This is the word used to store all measurements - conversions are illustrated.
+        int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
 
         System.out.print( "\n" + this.getName() + "::Cleaning data");
 
@@ -27,9 +29,28 @@ public class CleanFilter extends FilterFramework {
                         id = id << 8;                    // to make room for the next byte we append to the ID
                     } // if
                     bytesread++;
-                } // if
-                WriteFilterOutputPort(databyte);
-                byteswritten++;
+                    WriteFilterOutputPort(databyte);
+                    byteswritten++;
+
+                    measurement = 0;
+                    for (i=0; i<MeasurementLength; i++ )
+                    {
+                        databyte = ReadFilterInputPort();
+                        measurement = measurement | (databyte & 0xFF);	// We append the byte on to measurement...
+                        if (i != MeasurementLength-1)					// If this is not the last byte, then slide the
+                        {												// previously appended byte to the left by one byte
+                            measurement = measurement << 8;				// to make room for the next byte we append to the
+                            // measurement
+                        } // if
+                        bytesread++;									// Increment the byte count
+                        WriteFilterOutputPort(databyte);
+                        byteswritten++;
+                    } // for
+                } else {
+                    for (i=0; i<MeasurementLength; i++ ) {
+                        databyte = ReadFilterInputPort();
+                    }
+                }
             } // try
             catch (FilterFramework.EndOfStreamException e)
             {
