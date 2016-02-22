@@ -260,7 +260,7 @@ public class FilterFramework extends Thread
 	*
 	* Returns: void
 	*
-	* Exceptions: IOExecption
+	* Exceptions: IOException
 	*
 	****************************************************************************/
 
@@ -291,7 +291,7 @@ public class FilterFramework extends Thread
 	*
 	* Returns: void
 	*
-	* Exceptions: IOExecption
+	* Exceptions: IOException
 	*
 	****************************************************************************/
 
