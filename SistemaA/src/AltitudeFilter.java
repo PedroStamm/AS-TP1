@@ -18,6 +18,7 @@ public class AltitudeFilter extends FilterFramework {
 
         byte databyte = 0;				// This is the data byte read from the stream
         int bytesread = 0;				// This is the number of bytes read from the stream
+        int byteswritten = 0;
         byte bytes[];                   // This is an array to hold bytes
 
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
@@ -28,7 +29,7 @@ public class AltitudeFilter extends FilterFramework {
          *	First we announce to the world that we are alive...
          **************************************************************/
 
-        System.out.print( "\n" + this.getName() + "::Sink Reading ");
+        System.out.print( "\n" + this.getName() + "::Altitude Reading ");
 
         while (true)
         {
@@ -64,11 +65,13 @@ public class AltitudeFilter extends FilterFramework {
                     bytes = toByteArray(id);
                     for(i=0; i<bytes.length; i++){
                         WriteFilterOutputPort(bytes[i]);
+                        byteswritten++;
                     }
                     for(i=0; i<MeasurementLength; i++){
                         databyte = ReadFilterInputPort();
                         WriteFilterOutputPort(databyte);
                         bytesread++;
+                        byteswritten++;
                     }
 
                 }  else {
@@ -104,10 +107,12 @@ public class AltitudeFilter extends FilterFramework {
                     bytes = toByteArray(id);
                     for(i=0; i<bytes.length; i++){
                         WriteFilterOutputPort(bytes[i]);
+                        byteswritten++;
                     }
                     bytes = toByteArray(measurement);
                     for(i=0; i<bytes.length; i++){
                         WriteFilterOutputPort(bytes[i]);
+                        byteswritten++;
                     }
 
                 } // if else
@@ -123,7 +128,7 @@ public class AltitudeFilter extends FilterFramework {
             catch (EndOfStreamException e)
             {
                 ClosePorts();
-                System.out.print( "\n" + this.getName() + "::Sink Exiting; bytes read: " + bytesread );
+                System.out.print( "\n" + this.getName() + "::Altitude Exiting; bytes read: " + bytesread + "; bytes written: " + byteswritten );
                 break;
 
             } // catch
