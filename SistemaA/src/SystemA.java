@@ -20,7 +20,7 @@
  * Internal Methods:	None
  *
  ******************************************************************************************************************/
-public class Plumber
+public class SystemA
 {
     public static void main( String argv[])
     {
