@@ -32,11 +32,11 @@ public class SystemA
         SinkFilter Filter3 = new SinkFilter();
         */
 
-        TemperatureFilter temperature = new TemperatureFilter();
-        AltitudeFilter altitude = new AltitudeFilter();
-        SinkFilter sink = new SinkFilter();
-        SourceFilter source = new SourceFilter();
-        CleanFilter clean = new CleanFilter();
+        TemperatureFilter temperatureFilter = new TemperatureFilter();
+        AltitudeFilter altitudeFilter = new AltitudeFilter();
+        SinkFilter sinkFilter = new SinkFilter();
+        SourceFilter sourceFilter = new SourceFilter();
+        CleanFilter cleanFilter = new CleanFilter();
 
         /****************************************************************************
          * Here we connect the filters starting with the sink filter (Filter 1) which
@@ -49,10 +49,10 @@ public class SystemA
         Filter2.Connect(Filter1); // This esstially says, "connect Filter2 intput port to Filter1 output port
         */
 
-        clean.Connect(source);
-        temperature.Connect(clean);
-        altitude.Connect(temperature);
-        sink.Connect(altitude);
+        cleanFilter.Connect(sourceFilter);
+        temperatureFilter.Connect(cleanFilter);
+        altitudeFilter.Connect(temperatureFilter);
+        sinkFilter.Connect(altitudeFilter);
 
         /****************************************************************************
          * Here we start the filters up. All-in-all,... its really kind of boring.
@@ -64,11 +64,11 @@ public class SystemA
         Filter3.start();
         */
 
-        source.start();
-        clean.start();
-        temperature.start();
-        altitude.start();
-        sink.start();
+        sourceFilter.start();
+        cleanFilter.start();
+        temperatureFilter.start();
+        altitudeFilter.start();
+        sinkFilter.start();
 
     } // main
 
