@@ -51,7 +51,7 @@ public class FilterFramework extends Thread
 	private FilterFramework InputFilter;
 
 	/***************************************************************************
-	* InnerClass:: EndOfStreamExeception
+	* InnerClass:: EndOfStreamException
 	* Purpose: This
 	*
 	*
@@ -115,7 +115,7 @@ public class FilterFramework extends Thread
 	*
 	* Returns: byte of data read from the input port of the filter.
 	*
-	* Exceptions: IOExecption, EndOfStreamException (rethrown)
+	* Exceptions: IOException, EndOfStreamException (rethrown)
 	*
 	****************************************************************************/
 
