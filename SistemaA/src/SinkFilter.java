@@ -124,8 +124,9 @@ public class SinkFilter extends FilterFramework
 
 				if ( id == 0 )
 				{
+					System.out.print("\n");
 					TimeStamp.setTimeInMillis(measurement);
-
+					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + "  ");
 				} // if
 
 				/****************************************************************************
@@ -138,13 +139,11 @@ public class SinkFilter extends FilterFramework
 				// in.
 				****************************************************************************/
 
-				if ( id == 4 )
+				else
 				{
-					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + " ID = " + id + " " + Double.longBitsToDouble(measurement) );
+					System.out.print("ID = " + id + " - " + Double.longBitsToDouble(measurement) );
 
 				} // if
-
-				System.out.print( "\n" );
 
 			} // try
 

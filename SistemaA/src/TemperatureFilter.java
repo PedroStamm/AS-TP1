@@ -117,7 +117,8 @@ public class TemperatureFilter extends FilterFramework {
                     //Converte o id novamente e envia para o output
 
                     intarray = intToByteArray(id);
-                    for(i=0;i<intarray.length;i++){
+                    for (i=0; i<intarray.length; i++ )
+                    {
                         WriteFilterOutputPort(intarray[i]);
                     }
 
