@@ -44,7 +44,7 @@ public class TemperatureFilter extends FilterFramework {
 
         // Next we write a message to the terminal to let the world know we are alive...
 
-        System.out.print( "\n" + this.getName() + "::Middle Reading ");
+        System.out.print( "\n" + this.getName() + "::Temperature Reading ");
 
         while (true)
         {
@@ -134,7 +134,7 @@ public class TemperatureFilter extends FilterFramework {
             catch (FilterFramework.EndOfStreamException e)
             {
                 ClosePorts();
-                System.out.print( "\n" + this.getName() + "::Temperature Exiting; bytes read: " + bytesread + " bytes written: " + byteswritten );
+                System.out.print( "\n" + this.getName() + "::Temperature Exiting; ");
                 break;
 
             } // catch
