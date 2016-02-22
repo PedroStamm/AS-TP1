@@ -20,7 +20,7 @@ public class CleanFilter extends FilterFramework {
         {
             try
             {
-                id=-1;
+                id=0;
                 for (i=0; i<IdLength; i++ ) {
                     databyte = ReadFilterInputPort();
                     id = id | (databyte & 0xFF);        // We append the byte on to ID...
@@ -28,26 +28,19 @@ public class CleanFilter extends FilterFramework {
                     {                                    // previously appended byte to the left by one byte
                         id = id << 8;                    // to make room for the next byte we append to the ID
                     } // if
+                    bytesread++;
                 } // for
-                bytesread++;
                 if (id == 0 || id==2 || id==4) {        // select only the values for timestamp, temperature and altitude
                     byte[] bytes = ByteBuffer.allocate(4).putInt(id).array(); // transform id to bytes
                     for (i=0;i<bytes.length;i++)
                     {
                         WriteFilterOutputPort(bytes[i]); // write id to output
+                        byteswritten++;
                     }
-                    byteswritten++;
 
-                    measurement = 0;
                     for (i=0; i<MeasurementLength; i++ )
                     {
                         databyte = ReadFilterInputPort();
-                        measurement = measurement | (databyte & 0xFF);	// We append the byte on to measurement...
-                        if (i != MeasurementLength-1)					// If this is not the last byte, then slide the
-                        {												// previously appended byte to the left by one byte
-                            measurement = measurement << 8;				// to make room for the next byte we append to the
-                            // measurement
-                        } // if
                         bytesread++;									// Increment the byte count
                         WriteFilterOutputPort(databyte);                // write data to output
                         byteswritten++;
@@ -55,6 +48,7 @@ public class CleanFilter extends FilterFramework {
                 } else {
                     for (i=0; i<MeasurementLength; i++ ) {
                         databyte = ReadFilterInputPort();
+                        bytesread++;
                     }
                 }
             } // try
