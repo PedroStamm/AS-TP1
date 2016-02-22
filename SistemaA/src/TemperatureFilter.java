@@ -100,8 +100,9 @@ public class TemperatureFilter extends FilterFramework {
                     }
 
                     //Foruma de conversao (F  -  32)  x  5/9 = C
-                    measurement = (measurement - 32) * 5 / 9;
 
+                    long teste = measurement;
+                    measurement = Double.doubleToLongBits((Double.longBitsToDouble(measurement) - 32) * 5 / 9);
                     intarray = intToByteArray(id);
                     longarray = longToByteArray(measurement);
 
@@ -125,6 +126,7 @@ public class TemperatureFilter extends FilterFramework {
                     for (i=0; i<MeasurementLength; i++ )
                     {
                         databyte = ReadFilterInputPort();
+                        bytesread++;
                         WriteFilterOutputPort(databyte);
                     }
                 }
@@ -134,7 +136,7 @@ public class TemperatureFilter extends FilterFramework {
             catch (FilterFramework.EndOfStreamException e)
             {
                 ClosePorts();
-                System.out.print( "\n" + this.getName() + "::Temperature Exiting; ");
+                System.out.print( "\n" + this.getName() + "::Temperature Exiting; bytes read: "+ bytesread);
                 break;
 
             } // catch
