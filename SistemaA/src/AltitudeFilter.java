@@ -6,11 +6,6 @@ import java.nio.ByteBuffer;
 public class AltitudeFilter extends FilterFramework {
     public void run()
     {
-        /************************************************************************************
-         *	TimeStamp is used to compute time using java.util's Calendar class.
-         * 	TimeStampFormat is used to format the time value so that it can be easily printed
-         *	to the terminal.
-         *************************************************************************************/
 
 
         int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
