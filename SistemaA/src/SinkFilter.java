@@ -126,7 +126,7 @@ public class SinkFilter extends FilterFramework
 				{
 					System.out.print("\n");
 					TimeStamp.setTimeInMillis(measurement);
-					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + "  ");
+					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + "\t");
 				} // if
 
 				/****************************************************************************
@@ -141,7 +141,22 @@ public class SinkFilter extends FilterFramework
 
 				else
 				{
-					System.out.print("ID = " + id + " - " + Double.longBitsToDouble(measurement) );
+					if(id == 1){
+						System.out.print("(Speed) ");
+					}
+					if(id == 2){
+						System.out.print("(Altitude) ");
+					}
+					if(id == 3){
+						System.out.print("(Pressure) ");
+					}
+					if(id == 4){
+						System.out.print("(Temperature) ");
+					}
+					if(id == 5){
+						System.out.print("(Pitch) ");
+					}
+					System.out.print(Double.longBitsToDouble(measurement)+"\t" );
 
 				} // if
 
