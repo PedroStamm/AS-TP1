@@ -1,5 +1,5 @@
 /******************************************************************************************************************
-* File:SinkFilter.java
+* File:SinkFileFilter.java
 * Course: 17655
 * Project: Assignment 1
 * Copyright: Copyright (c) 2003 Carnegie Mellon University
@@ -23,11 +23,17 @@
 * Internal Methods: None
 *
 ******************************************************************************************************************/
+import java.io.*;
 import java.util.*;						// This class is used to interpret time words
 import java.text.SimpleDateFormat;		// This class is used to format and write time in a string format.
 
-public class SinkFilter extends FilterFramework
+public class SinkFileFilter extends FilterFramework
 {
+	private String filename;
+	public SinkFileFilter(String filename){
+		super();
+		this.filename=filename;
+	}
 	public void run()
     {
 		/************************************************************************************
@@ -49,6 +55,7 @@ public class SinkFilter extends FilterFramework
 		int id;							// This is the measurement id
 		int i;							// This is a loop counter
 
+		File f = new File(filename);
 		/*************************************************************
 		*	First we announce to the world that we are alive...
 		**************************************************************/
@@ -121,12 +128,12 @@ public class SinkFilter extends FilterFramework
 				// dealing with time arithmetically or for string display purposes. This is
 				// illustrated below.
 				****************************************************************************/
-
+				FileWriter fwriter = new FileWriter (f);
 				if ( id == 0 )
 				{
-					System.out.print("\n");
+					fwriter.write("\n");
 					TimeStamp.setTimeInMillis(measurement);
-					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + "\t");
+					fwriter.write( TimeStampFormat.format(TimeStamp.getTime()) + "\t");
 				} // if
 
 				/****************************************************************************
@@ -142,21 +149,21 @@ public class SinkFilter extends FilterFramework
 				else
 				{
 					if(id == 1){
-						System.out.print("(Speed) ");
+						fwriter.write("(Speed) ");
 					}
 					if(id == 2){
-						System.out.print("(Altitude) ");
+						fwriter.write("(Altitude) ");
 					}
 					if(id == 3){
-						System.out.print("(Pressure) ");
+						fwriter.write("(Pressure) ");
 					}
 					if(id == 4){
-						System.out.print("(Temperature) ");
+						fwriter.write("(Temperature) ");
 					}
 					if(id == 5){
-						System.out.print("(Pitch) ");
+						fwriter.write("(Pitch) ");
 					}
-					System.out.print(Double.longBitsToDouble(measurement)+"\t" );
+					fwriter.write(Double.longBitsToDouble(measurement)+"\t" );
 
 				} // if
 
@@ -175,9 +182,15 @@ public class SinkFilter extends FilterFramework
 				break;
 
 			} // catch
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		} // while
 
    } // run
 
+	public String getFilename() {
+		return filename;
+	}
 } // SingFilter
