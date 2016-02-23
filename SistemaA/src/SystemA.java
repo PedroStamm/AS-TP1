@@ -29,13 +29,13 @@ public class SystemA
         /*
         SourceFilter Filter1 = new SourceFilter();
         MiddleFilter Filter2 = new MiddleFilter();
-        SinkFileFilter Filter3 = new SinkFileFilter();
+        SinkFilter Filter3 = new SinkFilter();
         */
 
         TemperatureFilter temperatureFilter = new TemperatureFilter();
         AltitudeFilter altitudeFilter = new AltitudeFilter();
-        SinkFileFilter sinkFileFilter = new SinkFileFilter("Output.dat");
-        SourceFilter sourceFilter = new SourceFilter();
+        SinkFilter sinkFilter = new SinkFilter();
+        SourceFilter sourceFilter = new SourceFilter("FlightData.dat");
         CleanFilter cleanFilter = new CleanFilter(1);
         CleanFilter cleanFilter2 = new CleanFilter(3);
         CleanFilter cleanFilter3 = new CleanFilter(5);
@@ -56,7 +56,7 @@ public class SystemA
         cleanFilter3.Connect(cleanFilter2);
         temperatureFilter.Connect(cleanFilter3);
         altitudeFilter.Connect(temperatureFilter);
-        sinkFileFilter.Connect(altitudeFilter);
+        sinkFilter.Connect(altitudeFilter);
 
         /****************************************************************************
          * Here we start the filters up. All-in-all,... its really kind of boring.
@@ -74,7 +74,7 @@ public class SystemA
         cleanFilter3.start();
         temperatureFilter.start();
         altitudeFilter.start();
-        sinkFileFilter.start();
+        sinkFilter.start();
 
     } // main
 
