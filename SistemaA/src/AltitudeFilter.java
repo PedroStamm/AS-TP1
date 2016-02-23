@@ -17,7 +17,15 @@ public class AltitudeFilter extends FilterFramework {
         byte bytes[];                   // This is an array to hold bytes
 
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
-        int id;							// This is the measurement id
+        int id;							// This is the measurement's id
+
+
+
+
+
+
+
+        // t id
         int i;							// This is a loop counter
 
         /*************************************************************
