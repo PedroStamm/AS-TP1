@@ -36,7 +36,9 @@ public class SystemA
         AltitudeFilter altitudeFilter = new AltitudeFilter();
         SinkFilter sinkFilter = new SinkFilter();
         SourceFilter sourceFilter = new SourceFilter();
-        CleanFilter cleanFilter = new CleanFilter();
+        CleanFilter cleanFilter = new CleanFilter(1);
+        CleanFilter cleanFilter2 = new CleanFilter(3);
+        CleanFilter cleanFilter3 = new CleanFilter(5);
 
         /****************************************************************************
          * Here we connect the filters starting with the sink filter (Filter 1) which
@@ -50,7 +52,9 @@ public class SystemA
         */
 
         cleanFilter.Connect(sourceFilter);
-        temperatureFilter.Connect(cleanFilter);
+        cleanFilter2.Connect(cleanFilter);
+        cleanFilter3.Connect(cleanFilter2);
+        temperatureFilter.Connect(cleanFilter3);
         altitudeFilter.Connect(temperatureFilter);
         sinkFilter.Connect(altitudeFilter);
 
@@ -66,6 +70,8 @@ public class SystemA
 
         sourceFilter.start();
         cleanFilter.start();
+        cleanFilter2.start();
+        cleanFilter3.start();
         temperatureFilter.start();
         altitudeFilter.start();
         sinkFilter.start();
