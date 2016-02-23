@@ -55,13 +55,12 @@ public class SinkFileFilter extends FilterFramework
 		int id;							// This is the measurement id
 		int i;							// This is a loop counter
 
-		File f = new File(filename);
 		/*************************************************************
 		*	First we announce to the world that we are alive...
 		**************************************************************/
 
 		System.out.print( "\n" + this.getName() + "::Sink Reading ");
-
+		File f = new File(filename);
 		while (true)
 		{
 			try
@@ -128,12 +127,12 @@ public class SinkFileFilter extends FilterFramework
 				// dealing with time arithmetically or for string display purposes. This is
 				// illustrated below.
 				****************************************************************************/
-				FileWriter fwriter = new FileWriter (f);
+
 				if ( id == 0 )
 				{
-					fwriter.write("\n");
+					writeToFile(f,"\n");
 					TimeStamp.setTimeInMillis(measurement);
-					fwriter.write( TimeStampFormat.format(TimeStamp.getTime()) + "\t");
+					writeToFile(f, TimeStampFormat.format(TimeStamp.getTime()) + "\t");
 				} // if
 
 				/****************************************************************************
@@ -149,21 +148,21 @@ public class SinkFileFilter extends FilterFramework
 				else
 				{
 					if(id == 1){
-						fwriter.write("(Speed) ");
+						writeToFile(f,"(Speed) ");
 					}
 					if(id == 2){
-						fwriter.write("(Altitude) ");
+						writeToFile(f,"(Altitude) ");
 					}
 					if(id == 3){
-						fwriter.write("(Pressure) ");
+						writeToFile(f,"(Pressure) ");
 					}
 					if(id == 4){
-						fwriter.write("(Temperature) ");
+						writeToFile(f,"(Temperature) ");
 					}
 					if(id == 5){
-						fwriter.write("(Pitch) ");
+						writeToFile(f,"(Pitch) ");
 					}
-					fwriter.write(Double.longBitsToDouble(measurement)+"\t" );
+					writeToFile(f,Double.longBitsToDouble(measurement)+"\t" );
 
 				} // if
 
@@ -192,5 +191,13 @@ public class SinkFileFilter extends FilterFramework
 
 	public String getFilename() {
 		return filename;
+	}
+
+	private void writeToFile(File f, String content) throws IOException {
+		FileWriter fw = new FileWriter(f.getAbsoluteFile(), true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.append(content);
+		bw.close();
+		fw.close();
 	}
 } // SingFilter
