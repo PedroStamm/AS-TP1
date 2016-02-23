@@ -4,6 +4,13 @@ import java.nio.ByteBuffer;
  * Created by dbast on 22/02/2016.
  */
 public class CleanFilter extends FilterFramework {
+
+    private int idfilter;
+
+    public CleanFilter(int id){
+        this.idfilter = id;
+    }
+
     public void run()
     {
         int bytesread = 0;					// Number of bytes read from the input file.
@@ -30,7 +37,7 @@ public class CleanFilter extends FilterFramework {
                     } // if
                     bytesread++;
                 } // for
-                if (id == 0 || id==2 || id==3 || id==4) {        // select only the values for timestamp, temperature and altitude
+                if (id != idfilter) {        // select only the values for timestamp, temperature and altitude
                     byte[] bytes = ByteBuffer.allocate(4).putInt(id).array(); // transform id to bytes
                     for (i=0;i<bytes.length;i++)
                     {
