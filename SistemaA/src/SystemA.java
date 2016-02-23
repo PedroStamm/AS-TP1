@@ -34,7 +34,7 @@ public class SystemA
 
         TemperatureFilter temperatureFilter = new TemperatureFilter();
         AltitudeFilter altitudeFilter = new AltitudeFilter();
-        SinkFilter sinkFilter = new SinkFilter();
+        SinkFileFilter sinkFilter = new SinkFileFilter("Output.dat");
         SourceFilter sourceFilter = new SourceFilter("FlightData.dat");
         CleanFilter cleanFilter = new CleanFilter(1);
         CleanFilter cleanFilter2 = new CleanFilter(3);
