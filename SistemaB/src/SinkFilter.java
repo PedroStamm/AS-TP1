@@ -143,20 +143,23 @@ public class SinkFilter extends FilterFramework
 				{
 					if(id == 1){
 						System.out.print("(Speed) ");
-					}
+					}else
 					if(id == 2){
 						System.out.print("(Altitude) ");
-					}
-					if(id == 3){
+					}else
+					if(id == 3 || id == 6){
 						System.out.print("(Pressure) ");
-					}
+					}else
 					if(id == 4){
 						System.out.print("(Temperature) ");
-					}
+					}else
 					if(id == 5){
 						System.out.print("(Pitch) ");
 					}
 					System.out.print(Double.longBitsToDouble(measurement)+"\t" );
+					if(id == 6){
+						System.out.print("*");
+					}
 
 				} // if
 
