@@ -44,6 +44,7 @@ public class SystemB
         Splitter splitter = new Splitter();
         ReceveSplitter recever1 = new ReceveSplitter();
         ReceveSplitter recever2 = new ReceveSplitter();
+        WildPointsFilter wildpointsfilter = new WildPointsFilter();
 
         /****************************************************************************
          * Here we connect the filters starting with the sink filter (Filter 1) which
@@ -69,8 +70,10 @@ public class SystemB
         cleanTempreature.Connect(recever2);
         cleanAltitude.Connect(cleanTempreature);
 
+        wildpointsfilter.Connect(cleanAltitude);
+
         sinkFilter.Connect(recever1);
-        sinkFilter2.Connect(cleanAltitude);
+        sinkFilter2.Connect(wildpointsfilter);
 
         /****************************************************************************
          * Here we start the filters up. All-in-all,... its really kind of boring.
@@ -92,6 +95,7 @@ public class SystemB
         recever2.start();
         cleanTempreature.start();
         cleanAltitude.start();
+        wildpointsfilter.start();
         sinkFilter.start();
         sinkFilter2.start();
 
