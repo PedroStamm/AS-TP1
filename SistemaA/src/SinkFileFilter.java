@@ -153,7 +153,7 @@ public class SinkFileFilter extends FilterFramework
 					if(id == 2){
 						writeToFile(f,"(Altitude) ");
 					}
-					if(id == 3){
+					if(id == 3 || id == 6){
 						writeToFile(f,"(Pressure) ");
 					}
 					if(id == 4){
@@ -162,7 +162,11 @@ public class SinkFileFilter extends FilterFramework
 					if(id == 5){
 						writeToFile(f,"(Pitch) ");
 					}
-					writeToFile(f,Double.longBitsToDouble(measurement)+"\t" );
+					writeToFile(f,Double.longBitsToDouble(measurement)+"" );
+					if(id == 6){
+						writeToFile(f,"*");
+					}
+					writeToFile(f,"\n");
 
 				} // if
 

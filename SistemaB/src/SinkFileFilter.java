@@ -1,5 +1,5 @@
 /******************************************************************************************************************
-* File:SinkFilter.java
+* File:SinkFileFilter.java
 * Course: 17655
 * Project: Assignment 1
 * Copyright: Copyright (c) 2003 Carnegie Mellon University
@@ -23,11 +23,17 @@
 * Internal Methods: None
 *
 ******************************************************************************************************************/
+import java.io.*;
 import java.util.*;						// This class is used to interpret time words
 import java.text.SimpleDateFormat;		// This class is used to format and write time in a string format.
 
-public class SinkFilter extends FilterFramework
+public class SinkFileFilter extends FilterFramework
 {
+	private String filename;
+	public SinkFileFilter(String filename){
+		super();
+		this.filename=filename;
+	}
 	public void run()
     {
 		/************************************************************************************
@@ -54,7 +60,7 @@ public class SinkFilter extends FilterFramework
 		**************************************************************/
 
 		System.out.print( "\n" + this.getName() + "::Sink Reading ");
-
+		File f = new File(filename);
 		while (true)
 		{
 			try
@@ -124,9 +130,9 @@ public class SinkFilter extends FilterFramework
 
 				if ( id == 0 )
 				{
-					System.out.print("\n");
+					writeToFile(f,"\n");
 					TimeStamp.setTimeInMillis(measurement);
-					System.out.print( TimeStampFormat.format(TimeStamp.getTime()) + "\t");
+					writeToFile(f, TimeStampFormat.format(TimeStamp.getTime()) + "\t");
 				} // if
 
 				/****************************************************************************
@@ -142,24 +148,21 @@ public class SinkFilter extends FilterFramework
 				else
 				{
 					if(id == 1){
-						System.out.print("(Speed) ");
-					}else
+						writeToFile(f,"(Speed) ");
+					}
 					if(id == 2){
-						System.out.print("(Altitude) ");
-					}else
-					if(id == 3 || id == 6){
-						System.out.print("(Pressure) ");
-					}else
+						writeToFile(f,"(Altitude) ");
+					}
+					if(id == 3){
+						writeToFile(f,"(Pressure) ");
+					}
 					if(id == 4){
-						System.out.print("(Temperature) ");
-					}else
+						writeToFile(f,"(Temperature) ");
+					}
 					if(id == 5){
-						System.out.print("(Pitch) ");
+						writeToFile(f,"(Pitch) ");
 					}
-					System.out.print(Double.longBitsToDouble(measurement)+"\t" );
-					if(id == 6){
-						System.out.print("*");
-					}
+					writeToFile(f,Double.longBitsToDouble(measurement)+"\t" );
 
 				} // if
 
@@ -178,9 +181,23 @@ public class SinkFilter extends FilterFramework
 				break;
 
 			} // catch
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		} // while
 
    } // run
 
+	public String getFilename() {
+		return filename;
+	}
+
+	private void writeToFile(File f, String content) throws IOException {
+		FileWriter fw = new FileWriter(f.getAbsoluteFile(), true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.append(content);
+		bw.close();
+		fw.close();
+	}
 } // SingFilter

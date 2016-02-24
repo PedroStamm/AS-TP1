@@ -34,10 +34,13 @@ public class SystemB
 
         TemperatureFilter temperatureFilter = new TemperatureFilter();
         AltitudeFilter altitudeFilter = new AltitudeFilter();
-        SinkFilter sinkFilter = new SinkFilter();
-        SourceFilter sourceFilter = new SourceFilter();
-        CleanFilter cleanFilter = new CleanFilter(1);
-        CleanFilter cleanFilter2 = new CleanFilter(5);
+        SinkFileFilter sinkFilter = new SinkFileFilter("OutputB.dat");
+        SinkFileFilter sinkFilter2 = new SinkFileFilter("WildPoints.dat");
+        SourceFilter sourceFilter = new SourceFilter("FlightData.dat");
+        CleanFilter cleanVelocity = new CleanFilter(1);
+        CleanFilter cleanPitch = new CleanFilter(5);
+        CleanFilter cleanTempreature = new CleanFilter(4);
+        CleanFilter cleanAltitude = new CleanFilter(2);
 
         /****************************************************************************
          * Here we connect the filters starting with the sink filter (Filter 1) which
@@ -50,10 +53,14 @@ public class SystemB
         Filter2.Connect(Filter1); // This esstially says, "connect Filter2 intput port to Filter1 output port
         */
 
-        cleanFilter.Connect(sourceFilter);
-        cleanFilter2.Connect(cleanFilter);
-        temperatureFilter.Connect(cleanFilter2);
+        cleanVelocity.Connect(sourceFilter);
+        cleanPitch.Connect(cleanVelocity);
+        temperatureFilter.Connect(cleanPitch);
         altitudeFilter.Connect(temperatureFilter);
+
+        /*SPLITTER*/
+
+
         sinkFilter.Connect(altitudeFilter);
 
         /****************************************************************************
@@ -67,8 +74,8 @@ public class SystemB
         */
 
         sourceFilter.start();
-        cleanFilter.start();
-        cleanFilter2.start();
+        cleanVelocity.start();
+        cleanPitch.start();
         temperatureFilter.start();
         altitudeFilter.start();
         sinkFilter.start();
