@@ -166,7 +166,7 @@ public class SinkFileFilter extends FilterFramework
 					if(id == 6){
 						writeToFile(f,"*");
 					}
-					writeToFile(f,"\n");
+					writeToFile(f,"\t");
 
 				} // if
 

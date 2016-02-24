@@ -147,22 +147,26 @@ public class SinkFileFilter extends FilterFramework
 
 				else
 				{
-					if(id == 1){
-						writeToFile(f,"(Speed) ");
-					}
-					if(id == 2){
-						writeToFile(f,"(Altitude) ");
-					}
-					if(id == 3){
-						writeToFile(f,"(Pressure) ");
-					}
-					if(id == 4){
-						writeToFile(f,"(Temperature) ");
-					}
-					if(id == 5){
-						writeToFile(f,"(Pitch) ");
-					}
-					writeToFile(f,Double.longBitsToDouble(measurement)+"\t" );
+                    if(id == 1){
+                        writeToFile(f,"(Speed) ");
+                    }
+                    if(id == 2){
+                        writeToFile(f,"(Altitude) ");
+                    }
+                    if(id == 3 || id == 6){
+                        writeToFile(f,"(Pressure) ");
+                    }
+                    if(id == 4){
+                        writeToFile(f,"(Temperature) ");
+                    }
+                    if(id == 5){
+                        writeToFile(f,"(Pitch) ");
+                    }
+                    writeToFile(f,Double.longBitsToDouble(measurement)+"" );
+                    if(id == 6){
+                        writeToFile(f,"*");
+                    }
+                    writeToFile(f,"\t");
 
 				} // if
 

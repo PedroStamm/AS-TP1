@@ -28,7 +28,7 @@ public class SystemB
 
         /*
         SourceFilter Filter1 = new SourceFilter();
-        MiddleFilter Filter2 = new MiddleFilter();
+        Splitter Filter2 = new Splitter();
         SinkFilter Filter3 = new SinkFilter();
         */
 
@@ -41,6 +41,9 @@ public class SystemB
         CleanFilter cleanPitch = new CleanFilter(5);
         CleanFilter cleanTempreature = new CleanFilter(4);
         CleanFilter cleanAltitude = new CleanFilter(2);
+        Splitter splitter = new Splitter();
+        ReceveSplitter recever1 = new ReceveSplitter();
+        ReceveSplitter recever2 = new ReceveSplitter();
 
         /****************************************************************************
          * Here we connect the filters starting with the sink filter (Filter 1) which
@@ -58,10 +61,16 @@ public class SystemB
         temperatureFilter.Connect(cleanPitch);
         altitudeFilter.Connect(temperatureFilter);
 
-        /*SPLITTER*/
+        splitter.Connect(altitudeFilter);
 
+        recever1.Connect(splitter);
+        recever2.Connect(splitter);
 
-        sinkFilter.Connect(altitudeFilter);
+        cleanTempreature.Connect(recever2);
+        cleanAltitude.Connect(cleanTempreature);
+
+        sinkFilter.Connect(recever1);
+        sinkFilter2.Connect(cleanAltitude);
 
         /****************************************************************************
          * Here we start the filters up. All-in-all,... its really kind of boring.
@@ -78,7 +87,13 @@ public class SystemB
         cleanPitch.start();
         temperatureFilter.start();
         altitudeFilter.start();
+        splitter.start();
+        recever1.start();
+        recever2.start();
+        cleanTempreature.start();
+        cleanAltitude.start();
         sinkFilter.start();
+        sinkFilter2.start();
 
     } // main
 
