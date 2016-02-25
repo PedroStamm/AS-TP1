@@ -35,6 +35,7 @@
 ******************************************************************************************************************/
 
 import java.io.*;
+import java.nio.ByteBuffer;
 
 public class FilterFramework extends Thread
 {
@@ -302,5 +303,61 @@ public class FilterFramework extends Thread
 		// see the example applications provided for more details.
 
 	} // run
+
+	byte[] toByteArray(int number){
+		byte bytes[];
+		bytes = ByteBuffer.allocate(Integer.SIZE/Byte.SIZE).putInt(number).array();
+		return bytes;
+	}
+
+	byte[] toByteArray(long number){
+		byte bytes[];
+		bytes = ByteBuffer.allocate(Long.SIZE/Byte.SIZE).putLong(number).array();
+		return bytes;
+	}
+
+	int readId(int idLength) throws EndOfStreamException {
+		int id = 0;
+		byte databyte;
+
+		int i;
+
+		for (i=0; i<idLength; i++ )
+		{
+			databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
+			id = id | (databyte & 0xFF);		// We append the byte on to ID...
+			if (i != idLength-1)				// If this is not the last byte, then slide the
+			{									// previously appended byte to the left by one byte
+				id = id << 8;					// to make room for the next byte we append to the ID
+			} // if
+		} // for
+		return id;
+	}
+
+	long readMeasurement(int measurementLength) throws EndOfStreamException {
+		long measurement = 0;
+		byte databyte;
+
+		int i;
+		for (i=0; i<measurementLength; i++ )
+		{
+			databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
+			measurement = measurement | (databyte & 0xFF);		// We append the byte on to ID...
+			if (i != measurementLength-1)				// If this is not the last byte, then slide the
+			{									// previously appended byte to the left by one byte
+				measurement = measurement << 8;					// to make room for the next byte we append to the ID
+			} // if
+		} // for
+
+		return measurement;
+	}
+
+	void passMeasurement(int measurementLength) throws EndOfStreamException{
+		int i;
+
+		for(i=0; i<measurementLength; i++){
+			WriteFilterOutputPort(ReadFilterInputPort());
+		}
+	}
 
 } // FilterFramework class

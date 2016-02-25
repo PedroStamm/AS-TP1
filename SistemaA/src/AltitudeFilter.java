@@ -11,19 +11,13 @@ public class AltitudeFilter extends FilterFramework {
         int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
         int IdLength = 4;				// This is the length of IDs in the byte stream
 
-        byte databyte = 0;				// This is the data byte read from the stream
+        byte databyte;				// This is the data byte read from the stream
         int bytesread = 0;				// This is the number of bytes read from the stream
         int byteswritten = 0;
         byte bytes[];                   // This is an array to hold bytes
 
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
         int id;							// This is the measurement's id
-
-
-
-
-
-
 
         // t id
         int i;							// This is a loop counter
