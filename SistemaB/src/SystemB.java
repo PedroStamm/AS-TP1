@@ -39,11 +39,11 @@ public class SystemB
         SourceFilter sourceFilter = new SourceFilter("FlightData.dat");
         CleanFilter cleanVelocity = new CleanFilter(1);
         CleanFilter cleanPitch = new CleanFilter(5);
-        CleanFilter cleanTempreature = new CleanFilter(4);
+        CleanFilter cleanTemperature = new CleanFilter(4);
         CleanFilter cleanAltitude = new CleanFilter(2);
         Splitter splitter = new Splitter();
-        ReceveSplitter recever1 = new ReceveSplitter();
-        ReceveSplitter recever2 = new ReceveSplitter();
+        ReceiveSplitter receiver1 = new ReceiveSplitter();
+        ReceiveSplitter receiver2 = new ReceiveSplitter();
         WildPointsFilter wildpointsfilter = new WildPointsFilter();
         WildPointsConverter wildpointsconverter = new WildPointsConverter();
 
@@ -65,13 +65,13 @@ public class SystemB
 
         splitter.Connect(altitudeFilter);
 
-        recever1.Connect(splitter);
-        recever2.Connect(splitter);
+        receiver1.Connect(splitter);
+        receiver2.Connect(splitter);
 
-        wildpointsconverter.Connect(recever1);
+        wildpointsconverter.Connect(receiver1);
 
-        cleanTempreature.Connect(recever2);
-        cleanAltitude.Connect(cleanTempreature);
+        cleanTemperature.Connect(receiver2);
+        cleanAltitude.Connect(cleanTemperature);
 
         wildpointsfilter.Connect(cleanAltitude);
 
@@ -94,15 +94,15 @@ public class SystemB
         temperatureFilter.start();
         altitudeFilter.start();
         splitter.start();
-        recever1.start();
-        recever2.start();
-        wildpointsconverter.start();
-        cleanTempreature.start();
+        receiver1.start();
+        receiver2.start();
+        cleanTemperature.start();
         cleanAltitude.start();
         wildpointsfilter.start();
+        wildpointsconverter.start();
         sinkFilter.start();
         sinkFilter2.start();
 
     } // main
 
-} // Plumber
+} // SystemB

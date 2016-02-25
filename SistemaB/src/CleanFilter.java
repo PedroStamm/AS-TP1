@@ -21,7 +21,7 @@ public class CleanFilter extends FilterFramework {
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
         int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
 
-        System.out.print( "\n" + this.getName() + "::Cleaning data");
+        System.out.print( "\n" + this.getName() + "::Cleaning Filter Reading...");
 
         while (true)
         {
@@ -37,7 +37,7 @@ public class CleanFilter extends FilterFramework {
                     } // if
                     bytesread++;
                 } // for
-                if (id != idfilter) {        // select only the values for timestamp, temperature and altitude
+                if (id != idfilter) {        // select only the values for filtering out
                     byte[] bytes = ByteBuffer.allocate(4).putInt(id).array(); // transform id to bytes
                     for (i=0;i<bytes.length;i++)
                     {
