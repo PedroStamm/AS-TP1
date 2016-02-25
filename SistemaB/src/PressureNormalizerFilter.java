@@ -1,52 +1,46 @@
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Created by dbast on 22/02/2016.
+ * Created by Pedro on 25-02-2016.
  */
-public class AltitudeFilter extends FilterFramework {
-    public void run()
-    {
+public class PressureNormalizerFilter extends FilterFramework {
 
+    public void run() {
+        List frameList = new LinkedList<StreamFrame>();
+        StreamFrame frameRead;
 
-        int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
-        int IdLength = 4;				// This is the length of IDs in the byte stream
+        int idLength = 4;
+        int MeasurementLength = 8;
 
-        byte databyte;				// This is the data byte read from the stream
-        int bytesread = 0;				// This is the number of bytes read from the stream
+        byte databyte;
+        byte[] bytes;
+
+        int bytesread = 0;
         int byteswritten = 0;
-        byte bytes[];                   // This is an array to hold bytes
 
-        long measurement;				// This is the word used to store all measurements - conversions are illustrated.
-        int id;							// This is the measurement id
-        int i;							// This is a loop counter
+        int id;
+        long measurement;
 
-        /*************************************************************
-         *	First we announce to the world that we are alive...
-         **************************************************************/
-
+        int i;
         System.out.print( "\n" + this.getName() + "::Altitude Reading ");
 
         while (true)
         {
-            try
-            {
+            try {
                 /***************************************************************************
                  // We know that the first data coming to this filter is going to be an ID and
                  // that it is IdLength long. So we first decommutate the ID bytes.
                  ****************************************************************************/
 
-                id = 0;
+                id = readId(idLength);
+                bytesread+=idLength;
 
-                for (i=0; i<IdLength; i++ )
-                {
-                    databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
-                    bytesread++;						// Increment the byte count
-                    id = id | (databyte & 0xFF);		// We append the byte on to ID...
-                    if (i != IdLength-1)				// If this is not the last byte, then slide the
-                    {									// previously appended byte to the left by one byte
-                        id = id << 8;					// to make room for the next byte we append to the ID
-                    } // if
-                } // for
+                if(id==0){
+                    frameRead = new StreamFrame();
+                    frameRead.idTime = toByteArray(0);
+                }
 
                 /****************************************************************************
                  // Here we look for an ID of 2 which indicates this is an altitude measurement.
@@ -97,8 +91,6 @@ public class AltitudeFilter extends FilterFramework {
 
                     } // for
 
-                    measurement = feetToMeters(measurement);
-
                     bytes = toByteArray(id);
                     for(i=0; i<bytes.length; i++){
                         WriteFilterOutputPort(bytes[i]);
@@ -132,8 +124,4 @@ public class AltitudeFilter extends FilterFramework {
 
     } // run
 
-    private long feetToMeters(long altitude){
-        altitude = Double.doubleToLongBits (Double.longBitsToDouble(altitude)*0.3048);
-        return altitude;
-    }
 }
