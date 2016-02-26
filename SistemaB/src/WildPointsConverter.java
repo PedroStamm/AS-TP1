@@ -33,16 +33,14 @@ public class WildPointsConverter extends FilterFramework {
         int bytesread = 0;				// This is the number of bytes read from the stream
         int byteswritten = 0;				// Number of bytes written to the stream.
 
-        byte [] intarray;
-        byte [] longarray;
-
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
         long lastValidMeasurement = 0;
         long nextValidMeasurement = 0;
         long average = 0;
         int id;							// This is the measurement id
         int i, j;							// This is a loop counter
-        int k=0, x=0, actualFrame=1000;
+        int k=0, actualFrame=1000;
+        boolean valid=false;
 
         // Next we write a message to the terminal to let the world know we are alive...
 
@@ -60,7 +58,6 @@ public class WildPointsConverter extends FilterFramework {
                  // that it is IdLength long. So we first decommutate the ID bytes.
                  ****************************************************************************/
                 id=0;
-                //Ir ver que id é
                 for (i=0; i<IdLength; i++ )
                 {
                     databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
@@ -69,41 +66,22 @@ public class WildPointsConverter extends FilterFramework {
                     {									// previously appended byte to the left by one byte
                         id = id << 8;					// to make room for the next byte we append to the ID
                     }
-                    bytesread++;						// Increment the byte count
+                    bytesread++;
                 }
 
                 if(id==0){
                     k++;
                     frame[k] = new StreamFrame();
-                    for (i=0; i<IdLength; i++ )
-                    {
-                        frame[k].idTime = intToByteArray(id);
-                        bytesread++;
-                    }
-                    for (i=0; i<MeasurementLength; i++ )
-                    {
-                        frame[k].measurementTime[i] = ReadFilterInputPort();
-                        bytesread++;
-                    }
+                    frame[k].idTime = intToByteArray(id);
+                    bytesread = bytesread + readFromPipe(frame[k].measurementTime, MeasurementLength);
                 }
                 if(id==2){
-                    for (i=0; i<IdLength; i++ )
-                    {
-                        frame[k].idAltitude = intToByteArray(id);
-                        bytesread++;
-                    }
-                    for (i=0; i<MeasurementLength; i++ )
-                    {
-                        frame[k].measurementAltitude[i] = ReadFilterInputPort();
-                        bytesread++;
-                    }
+                    frame[k].idAltitude = intToByteArray(id);
+                    bytesread = bytesread + readFromPipe(frame[k].measurementAltitude, MeasurementLength);
                 }
                 if(id==3){
-                    for (i=0; i<IdLength; i++ )
-                    {
-                        frame[k].idPressure = intToByteArray(id);
-                        bytesread++;
-                    }
+                    frame[k].idPressure = intToByteArray(id);
+
                     measurement = 0;
                     for (i=0; i<MeasurementLength; i++ )
                     {
@@ -116,129 +94,55 @@ public class WildPointsConverter extends FilterFramework {
                         }
                         bytesread++;
                     }
+
                     if(Double.longBitsToDouble(measurement) > 50.0 && Double.longBitsToDouble(measurement) < 80.0){
-                        if(x==1) {
+                        if(valid==false) {
                             if (lastValidMeasurement != 0) {
-                                //System.out.println("lastValidMeasurement != 0 e k="+k);
+                                System.out.println("lastValidMeasurement != 0 e k="+k);
                                 nextValidMeasurement = measurement;
                                 average = (lastValidMeasurement+nextValidMeasurement)/2;
                                 frame[actualFrame].measurementPressure = longToByteArray(average);
-                            }
-                            else {
-                                //System.out.println("lastValidMeasurement == 0 e k="+k);
+                                actualFrame = k;
+                            } else {
+                                System.out.println("lastValidMeasurement == 0 e k="+k);
                                 //Percorrer Array e colocar valor de measurement
                                 //no valor de pressure (e mudar id)
-                                for (i=1; i<k; i++)
+                                for (i=actualFrame; i<k; i++)
                                 {
                                     frame[i].measurementPressure = longToByteArray(measurement);
                                 }
                             }
-                        } else {
-                            actualFrame = k;
                         }
                         lastValidMeasurement = measurement;
-                        x=0;
+                        valid=true;
                     } else {
-                        ///
-                        ///
-                        /// ALTERAR PARA MUDAR O VALOR DA PRESSAO UMA VEZ QUE APENAS ESTAO IDENTIFICADOS OS PONTOS SELVAGENS!
-                        ///
-                        ///
-                        //System.out.println("Frame actual: "+actualFrame+" e k="+k);
-                        if (k<actualFrame){
+                        if (k<=actualFrame)
+                        {
                             actualFrame = k;
                         }
                         frame[k].idPressure = intToByteArray(6);
-                        x=1;
+                        valid=false;
+                        if (lastValidMeasurement != 0) {
+                            //System.out.println("INVALID NUMBER lastValidMeasurement != 0 e frameactual= "+actualFrame+" k="+k);
+                            frame[k].measurementPressure = longToByteArray(lastValidMeasurement);
+                            actualFrame = k;
+                            valid=true;
+                        }
                     }
                 }
                 if(id==4){
-                    for (i=0; i<IdLength; i++ )
-                    {
-                        frame[k].idTemperature = intToByteArray(id);
-                        bytesread++;
-                    }
-                    for (i=0; i<MeasurementLength; i++ )
-                    {
-                        frame[k].measurementTemperature[i] = ReadFilterInputPort();
-                        bytesread++;
-                    }
+                    frame[k].idTemperature = intToByteArray(id);
+                    bytesread = bytesread + readFromPipe(frame[k].measurementTemperature, MeasurementLength);
 
-                    if (x==0){
-                        if (actualFrame==k)
-                        {
-                            for (i = 0; i < IdLength; i++) {
-                                WriteFilterOutputPort(frame[k].idTime[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < MeasurementLength; i++) {
-                                WriteFilterOutputPort(frame[k].measurementTime[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < IdLength; i++) {
-                                WriteFilterOutputPort(frame[k].idAltitude[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < MeasurementLength; i++) {
-                                WriteFilterOutputPort(frame[k].measurementAltitude[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < IdLength; i++) {
-                                WriteFilterOutputPort(frame[k].idPressure[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < MeasurementLength; i++) {
-                                WriteFilterOutputPort(frame[k].measurementPressure[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < IdLength; i++) {
-                                WriteFilterOutputPort(frame[k].idTemperature[i]);
-                                byteswritten++;
-                            }
-                            for (i = 0; i < MeasurementLength; i++) {
-                                WriteFilterOutputPort(frame[k].measurementTemperature[i]);
-                                byteswritten++;
-                                x = 0;
-                            }
-                        } else {
-                            for (j = actualFrame; j < k; j++) {
-                                System.out.println("Frame actual: " + actualFrame + " j=" + j + " k=" + k);
-                                for (i = 0; i < IdLength; i++) {
-                                    WriteFilterOutputPort(frame[j].idTime[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < MeasurementLength; i++) {
-                                    WriteFilterOutputPort(frame[j].measurementTime[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < IdLength; i++) {
-                                    WriteFilterOutputPort(frame[j].idAltitude[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < MeasurementLength; i++) {
-                                    WriteFilterOutputPort(frame[j].measurementAltitude[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < IdLength; i++) {
-                                    WriteFilterOutputPort(frame[j].idPressure[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < MeasurementLength; i++) {
-                                    WriteFilterOutputPort(frame[j].measurementPressure[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < IdLength; i++) {
-                                    WriteFilterOutputPort(frame[j].idTemperature[i]);
-                                    byteswritten++;
-                                }
-                                for (i = 0; i < MeasurementLength; i++) {
-                                    WriteFilterOutputPort(frame[j].measurementTemperature[i]);
-                                    byteswritten++;
-                                    x = 0;
-                                }
-                            }
-                            actualFrame = k;
+                    if (valid==true){
+                        //System.out.println("X=0 Frame actual: " + actualFrame +" k=" + k);
+                        for (j = actualFrame; j < k; j++) {
+                            //System.out.println("ELSE X=0 Frame actual: " + actualFrame + " j=" + j + " k=" + k);
+                            writeAllToPipe(frame[j], IdLength, MeasurementLength);
                         }
+                        writeAllToPipe(frame[k], IdLength, MeasurementLength);
+                        //actualFrame = j;
+                        valid=false;
                     }
                 }
             } // try
@@ -251,4 +155,42 @@ public class WildPointsConverter extends FilterFramework {
             } // catch
         } // while
     } // run
+
+    int readFromPipe(byte[] data, int length)
+    {
+        int i;
+        for (i = 0; i < length; i++)
+        {
+            try {
+                data[i] = ReadFilterInputPort();
+            } catch (EndOfStreamException e) {
+                e.printStackTrace();
+            }
+        }
+        return length;
+    }
+
+    int writeToPipe(byte[] data, int length)
+    {
+        int i;
+        for (i = 0; i < length; i++)
+        {
+            WriteFilterOutputPort(data[i]);
+        }
+        return length;
+    }
+
+    void writeAllToPipe(StreamFrame frame, int IdLength, int MeasurementLength)
+    {
+        writeToPipe(frame.idTime, IdLength);
+        writeToPipe(frame.measurementTime, MeasurementLength);
+        writeToPipe(frame.idAltitude, IdLength);
+        writeToPipe(frame.measurementAltitude, MeasurementLength);
+        writeToPipe(frame.idPressure, IdLength);
+        writeToPipe(frame.measurementPressure, MeasurementLength);
+        writeToPipe(frame.idTemperature, IdLength);
+        writeToPipe(frame.measurementTemperature, MeasurementLength);
+    }
 }
+
+
