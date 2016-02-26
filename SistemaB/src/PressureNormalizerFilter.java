@@ -24,7 +24,7 @@ public class PressureNormalizerFilter extends FilterFramework {
         long measurement;
 
         int i;
-        System.out.print( "\n" + this.getName() + "::Altitude Reading ");
+        System.out.print( "\n" + this.getName() + "::Normalizer Reading ");
 
         while (true)
         {
@@ -76,20 +76,8 @@ public class PressureNormalizerFilter extends FilterFramework {
                      // below.
                      *****************************************************************************/
 
-                    measurement = 0;
-
-                    for (i=0; i<MeasurementLength; i++ ){
-                        databyte = ReadFilterInputPort();
-                        measurement = measurement | (databyte & 0xFF);	// We append the byte on to measurement...
-                        bytesread++;
-
-                        if (i != MeasurementLength-1)					// If this is not the last byte, then slide the
-                        {												// previously appended byte to the left by one byte
-                            measurement = measurement << 8;				// to make room for the next byte we append to the
-                            // measurement
-                        } // if
-
-                    } // for
+                    measurement = readMeasurement(MeasurementLength);
+                    bytesread += MeasurementLength;
 
                     bytes = toByteArray(id);
                     for(i=0; i<bytes.length; i++){

@@ -34,21 +34,23 @@
 *
 ******************************************************************************************************************/
 
-import java.io.*;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.nio.ByteBuffer;
 
 public class FilterFramework extends Thread
 {
 	// Define filter input and output ports
 
-	private PipedInputStream InputReadPort = new PipedInputStream();
-	private PipedOutputStream OutputWritePort = new PipedOutputStream();
+	PipedInputStream InputReadPort = new PipedInputStream();
+	PipedOutputStream OutputWritePort = new PipedOutputStream();
 
 	// The following reference to a filter is used because java pipes are able to reliably
 	// detect broken pipes on the input port of the filter. This variable will point to
 	// the previous filter in the network and when it dies, we know that it has closed its
 	// output pipe and will send no more data.
 
-	private FilterFramework InputFilter;
+	FilterFramework InputFilter;
 
 	/***************************************************************************
 	* InnerClass:: EndOfStreamException
@@ -93,7 +95,6 @@ public class FilterFramework extends Thread
 		try
 		{
 			// Connect this filter's input to the upstream pipe's output stream
-
 			InputReadPort.connect( Filter.OutputWritePort );
 			InputFilter = Filter;
 
@@ -301,5 +302,81 @@ public class FilterFramework extends Thread
 		// see the example applications provided for more details.
 
 	} // run
+
+	byte[] toByteArray(int number){
+		byte bytes[];
+		bytes = ByteBuffer.allocate(Integer.SIZE/Byte.SIZE).putInt(number).array();
+		return bytes;
+	}
+
+	byte[] toByteArray(long number){
+		byte bytes[];
+		bytes = ByteBuffer.allocate(Long.SIZE/Byte.SIZE).putLong(number).array();
+		return bytes;
+	}
+
+	int readId(int idLength) throws EndOfStreamException {
+		int id = 0;
+		byte databyte;
+
+		int i;
+
+		for (i=0; i<idLength; i++ )
+		{
+			databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
+			id = id | (databyte & 0xFF);		// We append the byte on to ID...
+			if (i != idLength-1)				// If this is not the last byte, then slide the
+			{									// previously appended byte to the left by one byte
+				id = id << 8;					// to make room for the next byte we append to the ID
+			} // if
+		} // for
+		return id;
+	}
+
+	void writeId(int id, int idLength) throws EndOfStreamException{
+		byte bytes[];
+		int i;
+
+		bytes = toByteArray(id);
+		for(i=0; i<idLength; i++){
+			WriteFilterOutputPort(bytes[i]);
+		}
+	}
+
+	long readMeasurement(int measurementLength) throws EndOfStreamException {
+		long measurement = 0;
+		byte databyte;
+
+		int i;
+		for (i=0; i<measurementLength; i++ )
+		{
+			databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
+			measurement = measurement | (databyte & 0xFF);		// We append the byte on to ID...
+			if (i != measurementLength-1)				// If this is not the last byte, then slide the
+			{									// previously appended byte to the left by one byte
+				measurement = measurement << 8;					// to make room for the next byte we append to the ID
+			} // if
+		} // for
+
+		return measurement;
+	}
+
+	void writeMeasurement(long measurement, int measurementLength){
+		byte bytes[];
+		int i;
+
+		bytes = toByteArray(measurement);
+		for(i=0;i<measurementLength;i++){
+			WriteFilterOutputPort(bytes[i]);
+		}
+	}
+
+	void passMeasurement(int measurementLength) throws EndOfStreamException{
+		int i;
+
+		for(i=0; i<measurementLength; i++){
+			WriteFilterOutputPort(ReadFilterInputPort());
+		}
+	}
 
 } // FilterFramework class

@@ -29,18 +29,17 @@ public class WildPointsConverter extends FilterFramework {
         int IdLength = 4;				// This is the length of IDs in the byte stream
         int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
 
-        byte databyte = 0;				// This is the data byte read from the stream
+        byte databyte;				// This is the data byte read from the stream
         int bytesread = 0;				// This is the number of bytes read from the stream
         int byteswritten = 0;				// Number of bytes written to the stream.
 
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
         long lastValidMeasurement = 0;
-        long nextValidMeasurement = 0;
-        long average = 0;
+        long nextValidMeasurement;
+        long average;
         int id;							// This is the measurement id
-        int i, j;							// This is a loop counter
+        int i;							// This is a loop counter
         int k=0, actualFrame=1000;
-        int correctionFrame=1000;
         boolean valid=false;
 
         // Next we write a message to the terminal to let the world know we are alive...
@@ -97,7 +96,7 @@ public class WildPointsConverter extends FilterFramework {
                     }
 
                     if(Double.longBitsToDouble(measurement) > 50.0 && Double.longBitsToDouble(measurement) < 80.0){
-                        if(valid==false) {
+                        if(!valid) {
                             if (lastValidMeasurement != 0) {
                                 System.out.println("lastValidMeasurement != 0 e k="+k);
                                 nextValidMeasurement = measurement;
@@ -130,9 +129,6 @@ public class WildPointsConverter extends FilterFramework {
                         valid=false;
                         if (lastValidMeasurement != 0) {
                             System.out.println("INVALID NUMBER lastValidMeasurement != 0 e frameactual= "+actualFrame+" k="+k);
-                            //frame[k].measurementPressure = longToByteArray(lastValidMeasurement);
-                            //actualFrame = k;
-                            //valid=true;
                         }
                     }
                 }
@@ -140,7 +136,7 @@ public class WildPointsConverter extends FilterFramework {
                     frame[k].idTemperature = intToByteArray(id);
                     bytesread = bytesread + readFromPipe(frame[k].measurementTemperature, MeasurementLength);
 
-                    if (valid==true){
+                    if (valid){
                         System.out.println("X=0 Frame actual: " + actualFrame +" k=" + k);
                         while(actualFrame != k)
                         {

@@ -37,18 +37,8 @@ public class AltitudeFilter extends FilterFramework {
                  // that it is IdLength long. So we first decommutate the ID bytes.
                  ****************************************************************************/
 
-                id = 0;
-
-                for (i=0; i<IdLength; i++ )
-                {
-                    databyte = ReadFilterInputPort();	// This is where we read the byte from the stream...
-                    bytesread++;						// Increment the byte count
-                    id = id | (databyte & 0xFF);		// We append the byte on to ID...
-                    if (i != IdLength-1)				// If this is not the last byte, then slide the
-                    {									// previously appended byte to the left by one byte
-                        id = id << 8;					// to make room for the next byte we append to the ID
-                    } // if
-                } // for
+                id = readId(IdLength);
+                bytesread+=IdLength;
 
                 /****************************************************************************
                  // Here we look for an ID of 2 which indicates this is an altitude measurement.
@@ -59,17 +49,10 @@ public class AltitudeFilter extends FilterFramework {
 
                 if ( id !=2 )
                 {
-                    bytes = toByteArray(id);
-                    for(i=0; i<bytes.length; i++){
-                        WriteFilterOutputPort(bytes[i]);
-                        byteswritten++;
-                    }
-                    for(i=0; i<MeasurementLength; i++){
-                        databyte = ReadFilterInputPort();
-                        WriteFilterOutputPort(databyte);
-                        bytesread++;
-                        byteswritten++;
-                    }
+                    writeId(id, IdLength);
+                    passMeasurement(MeasurementLength);
+                    bytesread+=MeasurementLength;
+                    byteswritten+=IdLength+MeasurementLength;
 
                 }  else {
                     /****************************************************************************
@@ -84,33 +67,15 @@ public class AltitudeFilter extends FilterFramework {
                      // below.
                      *****************************************************************************/
 
-                    measurement = 0;
-
-                    for (i=0; i<MeasurementLength; i++ ){
-                        databyte = ReadFilterInputPort();
-                        measurement = measurement | (databyte & 0xFF);	// We append the byte on to measurement...
-                        bytesread++;
-
-                        if (i != MeasurementLength-1)					// If this is not the last byte, then slide the
-                        {												// previously appended byte to the left by one byte
-                            measurement = measurement << 8;				// to make room for the next byte we append to the
-                            // measurement
-                        } // if
-
-                    } // for
+                    measurement = readMeasurement(MeasurementLength);
+                    bytesread+=MeasurementLength;
 
                     measurement = feetToMeters(measurement);
 
-                    bytes = toByteArray(id);
-                    for(i=0; i<bytes.length; i++){
-                        WriteFilterOutputPort(bytes[i]);
-                        byteswritten++;
-                    }
-                    bytes = toByteArray(measurement);
-                    for(i=0; i<bytes.length; i++){
-                        WriteFilterOutputPort(bytes[i]);
-                        byteswritten++;
-                    }
+                    writeId(id, IdLength);
+                    byteswritten+=IdLength;
+                    writeMeasurement(measurement, MeasurementLength);
+                    byteswritten+=MeasurementLength;
 
                 } // if else
 
@@ -137,17 +102,5 @@ public class AltitudeFilter extends FilterFramework {
     private long feetToMeters(long altitude){
         altitude = Double.doubleToLongBits (Double.longBitsToDouble(altitude)*0.3048);
         return altitude;
-    }
-
-    private byte[] toByteArray(int number){
-        byte bytes[];
-        bytes = ByteBuffer.allocate(Integer.SIZE/Byte.SIZE).putInt(number).array();
-        return bytes;
-    }
-
-    private byte[] toByteArray(long number){
-        byte bytes[];
-        bytes = ByteBuffer.allocate(Long.SIZE/Byte.SIZE).putLong(number).array();
-        return bytes;
     }
 }

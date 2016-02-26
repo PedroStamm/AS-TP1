@@ -27,36 +27,16 @@ public class CleanFilter extends FilterFramework {
         {
             try
             {
-                id=0;
-                for (i=0; i<IdLength; i++ ) {
-                    databyte = ReadFilterInputPort();
-                    id = id | (databyte & 0xFF);        // We append the byte on to ID...
-                    if (i != IdLength - 1)                // If this is not the last byte, then slide the
-                    {                                    // previously appended byte to the left by one byte
-                        id = id << 8;                    // to make room for the next byte we append to the ID
-                    } // if
-                    bytesread++;
-                } // for
+                id=readId(IdLength);
+                bytesread+=IdLength;
                 if (id != idfilter) {        // select only the values for timestamp, temperature and altitude
-                    byte[] bytes = ByteBuffer.allocate(4).putInt(id).array(); // transform id to bytes
-                    for (i=0;i<bytes.length;i++)
-                    {
-                        WriteFilterOutputPort(bytes[i]); // write id to output
-                        byteswritten++;
-                    }
-
-                    for (i=0; i<MeasurementLength; i++ )
-                    {
-                        databyte = ReadFilterInputPort();
-                        bytesread++;									// Increment the byte count
-                        WriteFilterOutputPort(databyte);                // write data to output
-                        byteswritten++;
-                    } // for
+                    writeId(id, IdLength);
+                    passMeasurement(MeasurementLength);
+                    bytesread+=MeasurementLength;
+                    byteswritten+=IdLength+MeasurementLength;
                 } else {
-                    for (i=0; i<MeasurementLength; i++ ) {
-                        databyte = ReadFilterInputPort();
-                        bytesread++;
-                    }
+                    readMeasurement(MeasurementLength);
+                    bytesread+=MeasurementLength;
                 }
             } // try
             catch (FilterFramework.EndOfStreamException e)

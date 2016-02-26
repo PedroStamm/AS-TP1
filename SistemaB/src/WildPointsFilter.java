@@ -36,15 +36,9 @@ public class WildPointsFilter extends FilterFramework {
         int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
         int IdLength = 4;				// This is the length of IDs in the byte stream
 
-        byte databyte = 0;				// This is the data byte read from the stream
         int bytesread = 0;				// This is the number of bytes read from the stream
-        int byteswritten = 0;				// Number of bytes written to the stream.
-
-        byte [] intarray;
-        byte [] longarray;
 
         long measurement;				// This is the word used to store all measurements - conversions are illustrated.
-        int id;							// This is the measurement id
         int i;							// This is a loop counter
 
 
@@ -115,13 +109,11 @@ public class WildPointsFilter extends FilterFramework {
                     {
 
                         WriteFilterOutputPort(idTime[i]);
-                        byteswritten++;
 
                     }
                     for (i=0; i<MeasurementLength; i++ )
                     {
                         WriteFilterOutputPort(measurementTime[i]);
-                        byteswritten++;
 
                     }
 
@@ -131,13 +123,11 @@ public class WildPointsFilter extends FilterFramework {
                     {
 
                         WriteFilterOutputPort(idPressure[i]);
-                        byteswritten++;
 
                     }
                     for (i=0; i<MeasurementLength; i++ )
                     {
                         WriteFilterOutputPort(measurementPressure[i]);
-                        byteswritten++;
 
                     }
                 }
