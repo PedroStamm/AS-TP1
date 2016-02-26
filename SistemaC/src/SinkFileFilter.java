@@ -52,7 +52,7 @@ public class SinkFileFilter extends FilterFramework
 		int MeasurementLength = 8;		// This is the length of all measurements (including time) in bytes
 		int IdLength = 4;				// This is the length of IDs in the byte stream
 
-		byte databyte = 0;				// This is the data byte read from the stream
+		byte databyte;				// This is the data byte read from the stream
 		int bytesread = 0;				// This is the number of bytes read from the stream
 
 		long measurement;				// This is the word used to store all measurements - conversions are illustrated.
@@ -198,9 +198,5 @@ public class SinkFileFilter extends FilterFramework
 		}
 
    } // run
-
-	public String getFilename() {
-		return filename;
-	}
 
 } // SingFilter
