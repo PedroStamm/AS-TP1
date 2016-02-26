@@ -12,6 +12,7 @@ public class SystemC {
         SourceFilter sourceA = new SourceFilter("SubSetA.dat");
         SourceFilter sourceB = new SourceFilter("SubSetB.dat");
         JoinFilter joinFilter = new JoinFilter();
+        OrderTimeFilter orderTimeFilter = new OrderTimeFilter();
         SinkFileFilter sink = new SinkFileFilter("OutputC.dat");
 
         /****************************************************************************
@@ -19,7 +20,8 @@ public class SystemC {
          ****************************************************************************/
 
         joinFilter.Connect(sourceA, sourceB);
-        sink.Connect(joinFilter);
+        orderTimeFilter.Connect(joinFilter);
+        sink.Connect(orderTimeFilter);
         /****************************************************************************
          * Here we start the filters up. All-in-all,... its really kind of boring.
          ****************************************************************************/
@@ -27,6 +29,7 @@ public class SystemC {
         sourceA.start();
         sourceB.start();
         joinFilter.start();
+        orderTimeFilter.start();
         sink.start();
 
     }
