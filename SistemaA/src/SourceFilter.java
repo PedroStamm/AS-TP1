@@ -22,7 +22,7 @@ import java.io.*; // note we must add this here since we use BufferedReader clas
 public class SourceFilter extends FilterFramework
 {
 
-	String fileName = "FlightData.dat";	// Input data file.
+	String fileName;	// Input data file.
 
 	public SourceFilter(String nameFile){
 		this.fileName = nameFile;
