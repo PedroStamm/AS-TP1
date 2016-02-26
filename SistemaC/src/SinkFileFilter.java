@@ -167,9 +167,6 @@ public class SinkFileFilter extends FilterFramework
 						writeToFile(f,"(Pitch) ");
 					}
 					writeToFile(f,Double.longBitsToDouble(measurement)+"" );
-					if(id == 6){
-						writeToFile(f,"*");
-					}
 					writeToFile(f,"\t");
 
 				} // if
